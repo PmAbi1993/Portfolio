@@ -1,0 +1,243 @@
+# Cursor Rules for macOS‑style Portfolio
+version: 1
+
+project:
+  name: macos‑portfolio
+  description: >-
+    A React + TypeScript single‑page portfolio that mimics macOS desktop
+    UX (menu bar, Dock, draggable icons, resizable windows) and opens my
+    projects as app windows. Deploys to GitHub Pages.
+
+preferred_tech:
+  frontend:
+    - React
+    - TypeScript
+    - Vite
+    - TailwindCSS
+    - Zustand
+    - Heroicons or Lucide React
+  testing:
+    - Vitest
+    - @testing-library/react
+
+non_goals:
+  - Server rendering
+  - External design systems (MUI, Ant, etc.)
+  - Heavy animation libs (keep bundles lean)
+
+style:
+  code:
+    - Use functional components and hooks only.
+    - Strong typing: no `any` and no `as unknown as` hacks.
+    - Keep components small; extract hooks for logic.
+    - Accessibility first: label controls, ARIA roles, keyboard paths.
+  ui:
+    - macOS aesthetic (rounded corners, subtle translucency, frosted blur,
+      12/14/16pt system font sizes, focus rings, gentle shadows).
+    - Dark/Light themes; dynamic wallpapers.
+
+filesystem_layout:
+  - path: src/components/os
+    description: Core OS‑like primitives (MenuBar, Dock, Window, WindowManager, DesktopIcon, ContextMenu)
+  - path: src/apps
+    description: FinderAboutMe, SettingsWindow, TerminalWindow, ProjectWindow
+  - path: src/data
+    description: Projects data source and types
+  - path: public/wallpapers
+    description: Built‑in wallpapers
+  - path: public/icons
+    description: App and system icons
+  - path: public/screenshots
+    description: Project screenshots grouped by slug
+
+requirements:
+  - Implement a **menu bar** with dropdown menus and keyboard shortcuts.
+  - Implement a **Dock** with bounce animation and minimize/restore behavior.
+  - Implement **draggable desktop icons** with keyboard navigation.
+  - Implement a **Window** system (open/close/minimize/resize, z‑stack, snap to edges, remember state).
+  - Create **Finder → About Me** window from `src/data/profile.ts`.
+  - Create **Settings** window for theme/wallpaper/scale.
+  - Create **Project windows** fed by `src/data/projects.ts`.
+  - Optional **Terminal** with simple commands (`help`, `open <slug>`, `theme`, `wallpaper`).
+  - Persist preferences & window layout in `localStorage`.
+
+content_ingestion:
+  sources:
+    - file: resume.md
+    - file: Abhijith_Resume.pdf
+  transform:
+    - If resume exists, extract a canonical list of apps/projects with
+      fields: `slug`, `name`, `summary`, `year`, `tech[]`, `links { github?, appStore?, testFlight? }`,
+      `screenshots[]`, `highlights[]`. Write to `src/data/projects.ts`.
+    - If parsing fails, create `src/data/projects.ts` with 3 placeholders and TODOs.
+
+quality_gates:
+  - Lighthouse performance >= 90 desktop, >= 85 mobile.
+  - Bundle size (gzip) under ~250KB initial; lazy load project windows.
+  - All interactive controls reachable via keyboard; escape closes menus/windows.
+
+accessibility:
+  - Provide focus outlines, ARIA roles for menu, menuitem, toolbar, window, dialog.
+  - Support keyboard shortcuts documented in README.
+
+build_and_deploy:
+  vite:
+    base_path: "REPLACE_WITH_REPO_NAME"  # Cursor: set base to "/<repo>/" automatically
+  github_pages:
+    enabled: true
+    workflow_path: .github/workflows/deploy.yml
+    steps:
+      - Uses `actions/setup-node@v4`
+      - Install with `pnpm i --frozen-lockfile` (or npm if pnpm unavailable)
+      - Build via `pnpm build`
+      - Deploy with `actions/deploy-pages@v4`
+
+files_to_create:
+  - path: package.json
+    template: |
+      {
+        "name": "macos-portfolio",
+        "private": true,
+        "type": "module",
+        "scripts": {
+          "dev": "vite",
+          "build": "tsc -b && vite build",
+          "preview": "vite preview --host"
+        },
+        "dependencies": {
+          "react": "^18.3.1",
+          "react-dom": "^18.3.1",
+          "zustand": "^4.5.4",
+          "lucide-react": "^0.468.0"
+        },
+        "devDependencies": {
+          "@types/react": "^18.3.3",
+          "@types/react-dom": "^18.3.0",
+          "autoprefixer": "^10.4.20",
+          "postcss": "^8.4.41",
+          "tailwindcss": "^3.4.10",
+          "typescript": "^5.5.4",
+          "vite": "^5.4.2"
+        }
+      }
+  - path: vite.config.ts
+    template: |
+      import { defineConfig } from 'vite';
+      import react from '@vitejs/plugin-react';
+      // Cursor: replace REPO_NAME automatically or prompt user
+      const repo = process.env.REPO_NAME || 'REPLACE_WITH_REPO_NAME';
+      export default defineConfig({
+        plugins: [react()],
+        base: `/${repo}/`,
+      });
+  - path: tailwind.config.js
+    template: |
+      /** @type {import('tailwindcss').Config} */
+      export default {
+        content: ["./index.html", "./src/**/*.{ts,tsx}"],
+        theme: { extend: { } },
+        plugins: [],
+      }
+  - path: postcss.config.js
+    template: |
+      export default { plugins: { tailwindcss: {}, autoprefixer: {} } };
+  - path: index.html
+    template: |
+      <!doctype html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Abhijith • macOS Portfolio</title>
+        </head>
+        <body class="bg-black">
+          <div id="root"></div>
+          <script type="module" src="/src/main.tsx"></script>
+        </body>
+      </html>
+  - path: src/main.tsx
+    template: |
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
+      import './styles.css';
+      import { Desktop } from './os/Desktop';
+      createRoot(document.getElementById('root')!).render(<Desktop />);
+  - path: src/styles.css
+    template: |
+      @tailwind base; @tailwind components; @tailwind utilities;
+      :root { --blur: 14px }
+      .glass { backdrop-filter: saturate(180%) blur(var(--blur)); }
+  - path: src/data/projects.ts
+    template: |
+      export type Project = {
+        slug: string; name: string; summary: string; year?: string;
+        tech: string[]; links?: { github?: string; appStore?: string; testFlight?: string };
+        screenshots?: string[]; highlights?: string[];
+      };
+      export const projects: Project[] = [
+        // TODO: Cursor will try to populate from resume.md; replace placeholders
+        { slug: 'banking-app', name: 'Banking SuperApp', summary: 'Large‑scale iOS banking app', tech: ['Swift', 'SwiftUI', 'Combine'] },
+        { slug: 'bugme', name: 'BugMe', summary: 'Inspector for iOS/macOS UIs using Mirror API', tech: ['Swift', 'macOS'] },
+        { slug: 'iot-dashboard', name: 'IoT Dashboard', summary: 'Realtime device control', tech: ['Swift', 'GraphQL'] }
+      ];
+  - path: src/data/profile.ts
+    template: |
+      export const profile = {
+        name: 'Abhijith Pillath Madam',
+        title: 'iOS & macOS Developer',
+        location: 'Sydney, NSW',
+        email: 'pmabi1993@outlook.com',
+        links: { github: 'https://github.com/<you>', linkedin: 'https://www.linkedin.com/in/<you>' },
+        summary: '8.5+ years in banking/fintech, Swift/SwiftUI, MVVM‑C/VIP, CI/CD. Full Australian work rights.',
+        skills: ['Swift', 'SwiftUI', 'UIKit', 'Combine', 'CoreData', 'GraphQL', 'CI/CD', 'Testing', 'Accessibility']
+      } as const;
+  - path: .github/workflows/deploy.yml
+    template: |
+      name: Deploy to GitHub Pages
+      on:
+        push:
+          branches: [ main ]
+      permissions:
+        contents: read
+        pages: write
+        id-token: write
+      jobs:
+        build:
+          runs-on: ubuntu-latest
+          steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with: { node-version: 20 }
+            - name: Enable PNPM
+              run: corepack enable && corepack prepare pnpm@9.7.0 --activate
+            - run: pnpm install --frozen-lockfile
+            - name: Set repo for Vite base
+              run: echo "REPO_NAME=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
+            - run: pnpm build
+            - uses: actions/upload-pages-artifact@v3
+              with: { path: dist }
+        deploy:
+          needs: build
+          runs-on: ubuntu-latest
+          environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+          steps:
+            - id: deployment
+              uses: actions/deploy-pages@v4
+  - path: 404.html
+    template: |
+      <!doctype html>
+      <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Page Not Found</title>
+      <script>location.replace('/'+location.pathname.split('/')[1]+'/');</script>
+
+editor_preferences:
+  prefer_pnpm: true
+  line_length: 100
+  jsx: react-ts
+
+notes:
+  - If `resume.md` exists, extract projects to `src/data/projects.ts` automatically.
+  - Replace REPO_NAME in Vite base with the actual repository name.
+  - Keep macOS naming generic (no Apple trademarks beyond look/feel).
