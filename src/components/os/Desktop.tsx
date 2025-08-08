@@ -14,7 +14,7 @@ export function Desktop(): JSX.Element {
     document.documentElement.style.setProperty('--scale', String(scale));
   }, [theme, scale]);
 
-  const wallpaperUrl = useMemo(() => `/wallpapers/wallpaper-${wallpaperIndex % 3}.jpg`, [wallpaperIndex]);
+  const wallpaperUrl = useMemo(() => `wallpapers/wallpaper-${wallpaperIndex % 3}.jpg`, [wallpaperIndex]);
 
   return (
     <div className="h-full w-full overflow-hidden">

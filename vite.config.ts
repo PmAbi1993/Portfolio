@@ -4,9 +4,10 @@ import react from '@vitejs/plugin-react';
 // Cursor: replace REPO_NAME automatically or prompt user
 const repo = process.env.REPO_NAME || 'Portfolio';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  base: `/${repo}/`,
-});
+  // Use root in dev; repo subpath in prod (GitHub Pages)
+  base: mode === 'production' ? `/${repo}/` : '/',
+}));
 
 
