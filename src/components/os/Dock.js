@@ -9,11 +9,11 @@ export function Dock() {
         { id: 'finder', title: 'Finder', emoji: '🧭', onClick: () => openWindow({ id: 'finder', title: 'About Me', appType: 'finder', rect: { width: 700, height: 520, x: 120, y: 120 } }) },
         { id: 'settings', title: 'Settings', emoji: '⚙️', onClick: () => openWindow({ id: 'settings', title: 'Settings', appType: 'settings', rect: { width: 560, height: 420, x: 180, y: 160 } }) },
     ];
-    return (_jsx("div", { ref: dockRef, className: "fixed bottom-4 left-1/2 -translate-x-1/2", children: _jsx("div", { className: "glass rounded-2xl px-3 py-2 shadow-mac bg-white/40 dark:bg-black/50", role: "toolbar", "aria-label": "Dock", children: _jsx("ul", { className: "flex items-end gap-3", children: items.map((item) => {
+    return (_jsx("div", { ref: dockRef, className: "fixed bottom-6 left-1/2 -translate-x-1/2", children: _jsx("div", { className: "glass rounded-2xl px-3 py-2 shadow-mac bg-white/70 dark:bg-black/50 border border-black/10 dark:border-white/10", role: "toolbar", "aria-label": "Dock", children: _jsx("ul", { className: "flex items-end gap-3", children: items.map((item) => {
                     const win = windows[item.id];
                     const isOpen = !!win && !win.minimized;
                     const isMinimized = !!win && win.minimized;
-                    return (_jsxs("li", { className: "text-center", children: [_jsx("button", { className: `w-14 h-14 rounded-xl bg-black/20 hover:bg-black/30 text-2xl transition-transform ${!bounced[item.id] ? 'bounce' : ''}`, "aria-label": item.title, onAnimationEnd: () => setBounced((b) => ({ ...b, [item.id]: true })), onClick: () => {
+                    return (_jsxs("li", { className: "text-center", children: [_jsx("button", { className: `w-14 h-14 rounded-xl bg-black/10 hover:bg-black/20 dark:bg-black/20 dark:hover:bg-black/30 text-2xl transition-transform ring-1 ring-black/10 dark:ring-white/10 ${!bounced[item.id] ? 'bounce' : ''}`, "aria-label": item.title, onAnimationEnd: () => setBounced((b) => ({ ...b, [item.id]: true })), onClick: () => {
                                     if (isMinimized)
                                         restoreWindow(item.id);
                                     else

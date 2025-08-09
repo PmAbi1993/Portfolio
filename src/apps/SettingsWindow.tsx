@@ -21,7 +21,7 @@ export function SettingsWindow(): JSX.Element {
         <h2 className="font-semibold mb-2">Wallpaper</h2>
         <div className="flex items-center gap-3">
           {[0,1,2].map((i) => (
-            <button key={i} className={`w-20 h-12 bg-black/10 dark:bg-white/20 rounded ${wallpaperIndex===i?'ring-2 ring-blue-400':''}`} onClick={() => setWallpaperIndex(i)} aria-label={`Wallpaper ${i+1}`} />
+            <button key={i} className={`w-20 h-12 rounded bg-white/70 dark:bg-white/20 ring-1 ring-black/10 dark:ring-white/10 backdrop-blur-sm ${wallpaperIndex===i?'ring-2 ring-blue-400':''}`} onClick={() => setWallpaperIndex(i)} aria-label={`Wallpaper ${i+1}`} />
           ))}
         </div>
       </section>

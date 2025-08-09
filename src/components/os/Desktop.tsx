@@ -23,6 +23,11 @@ export function Desktop(): JSX.Element {
         style={{ backgroundImage: `url(${wallpaperUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         aria-hidden
       />
+      {/* Light-mode readability overlay over wallpaper */}
+      <div
+        className="fixed inset-0 pointer-events-none bg-black/25 dark:bg-transparent"
+        aria-hidden
+      />
       <MenuBar />
       <WindowManager />
       <div className="absolute left-0 right-0 bottom-0 top-12 px-4 select-none">
