@@ -22,12 +22,25 @@ export function Window({ win, children, contentTransparent = false, frameTranspa
     const onMove = (e: MouseEvent) => {
       const dx = e.clientX - drag.startX;
       const dy = e.clientY - drag.startY;
-      // Clamp to viewport
-      const maxX = Math.max(0, window.innerWidth - win.rect.width);
-      const maxY = Math.max(0, window.innerHeight - win.rect.height);
-      const nextX = Math.min(Math.max(0, drag.startLeft + dx), maxX);
-      const nextY = Math.min(Math.max(0, drag.startTop + dy), maxY);
-      moveWindow(win.id, { x: nextX, y: nextY });
+      
+      if (frameTransparent) {
+        // iOS Simulator: allow more freedom, just ensure titlebar stays accessible
+        const minVisibleArea = 40; // keep at least 40px of titlebar visible
+        const minX = -(win.rect.width - minVisibleArea);
+        const maxX = window.innerWidth - minVisibleArea;
+        const minY = -10; // allow slightly above viewport
+        const maxY = window.innerHeight - minVisibleArea;
+        const nextX = Math.min(Math.max(minX, drag.startLeft + dx), maxX);
+        const nextY = Math.min(Math.max(minY, drag.startTop + dy), maxY);
+        moveWindow(win.id, { x: nextX, y: nextY });
+      } else {
+        // Regular windows: clamp to viewport boundaries
+        const maxX = Math.max(0, window.innerWidth - win.rect.width);
+        const maxY = Math.max(0, window.innerHeight - win.rect.height);
+        const nextX = Math.min(Math.max(0, drag.startLeft + dx), maxX);
+        const nextY = Math.min(Math.max(0, drag.startTop + dy), maxY);
+        moveWindow(win.id, { x: nextX, y: nextY });
+      }
     };
     const onUp = () => setDrag(null);
     window.addEventListener('mousemove', onMove);
