@@ -31,6 +31,10 @@ export function Window({ win, children, contentTransparent = false, frameTranspa
 
   if (win.minimized) return null;
 
+  // Use a slightly more compact titlebar when the frame is transparent,
+  // to mimic the macOS Simulator spacing.
+  const titlebarHeightRem = frameTransparent ? 1.4 : 2; // slight padding when transparent
+
   return (
     <div
       ref={ref}
@@ -43,7 +47,8 @@ export function Window({ win, children, contentTransparent = false, frameTranspa
       onMouseDown={() => focusWindow(win.id)}
     >
       <div
-        className={`h-8 flex items-center gap-2 px-3 ${frameTransparent ? 'bg-transparent backdrop-blur-0' : ''}`}
+        className={`flex items-center gap-2 px-3 ${frameTransparent ? 'bg-transparent backdrop-blur-0' : ''}`}
+        style={{ height: `${titlebarHeightRem}rem` }}
         onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
           // Start drag on titlebar only
           if (e.button !== 0) return;
@@ -59,7 +64,10 @@ export function Window({ win, children, contentTransparent = false, frameTranspa
         </div>
         <div className="mx-auto text-sm select-none pointer-events-none">{win.title}</div>
       </div>
-      <div className={`w-full h-[calc(100%-2rem)] overflow-auto ${contentTransparent ? '' : 'bg-black/5 dark:bg-black/20'}`}>
+      <div
+        className={`w-full overflow-auto ${contentTransparent ? '' : 'bg-black/5 dark:bg-black/20'}`}
+        style={{ height: `calc(100% - ${titlebarHeightRem}rem)` }}
+      >
         {children}
       </div>
     </div>
