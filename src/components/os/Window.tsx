@@ -6,19 +6,28 @@ type Props = {
   children: React.ReactNode;
   contentTransparent?: boolean;
   frameTransparent?: boolean; // makes the window body clear like macOS Simulator
+  resizable?: boolean;
 };
 
-export function Window({ win, children, contentTransparent = false, frameTransparent = false }: Props): JSX.Element | null {
+export function Window({ win, children, contentTransparent = false, frameTransparent = false, resizable = true }: Props): JSX.Element | null {
   const { closeWindow, minimizeWindow, focusWindow, moveWindow } = useWindowStore();
   const ref = React.useRef<HTMLDivElement | null>(null);
   const [drag, setDrag] = React.useState<{ startX: number; startY: number; startLeft: number; startTop: number } | null>(null);
+  const [resize, setResize] = React.useState<{ startX: number; startY: number; startWidth: number; startHeight: number } | null>(null);
+  const MIN_WIDTH = 360;
+  const MIN_HEIGHT = 260;
 
   React.useEffect(() => {
     if (!drag) return;
     const onMove = (e: MouseEvent) => {
       const dx = e.clientX - drag.startX;
       const dy = e.clientY - drag.startY;
-      moveWindow(win.id, { x: drag.startLeft + dx, y: drag.startTop + dy });
+      // Clamp to viewport
+      const maxX = Math.max(0, window.innerWidth - win.rect.width);
+      const maxY = Math.max(0, window.innerHeight - win.rect.height);
+      const nextX = Math.min(Math.max(0, drag.startLeft + dx), maxX);
+      const nextY = Math.min(Math.max(0, drag.startTop + dy), maxY);
+      moveWindow(win.id, { x: nextX, y: nextY });
     };
     const onUp = () => setDrag(null);
     window.addEventListener('mousemove', onMove);
@@ -27,7 +36,27 @@ export function Window({ win, children, contentTransparent = false, frameTranspa
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup', onUp);
     };
-  }, [drag, moveWindow, win.id]);
+  }, [drag, moveWindow, win.id, win.rect.width, win.rect.height]);
+
+  React.useEffect(() => {
+    if (!resize) return;
+    const onMove = (e: MouseEvent) => {
+      const dx = e.clientX - resize.startX;
+      const dy = e.clientY - resize.startY;
+      const maxWidth = Math.max(MIN_WIDTH, window.innerWidth - win.rect.x);
+      const maxHeight = Math.max(MIN_HEIGHT, window.innerHeight - win.rect.y);
+      const width = Math.min(Math.max(MIN_WIDTH, resize.startWidth + dx), maxWidth);
+      const height = Math.min(Math.max(MIN_HEIGHT, resize.startHeight + dy), maxHeight);
+      moveWindow(win.id, { width, height });
+    };
+    const onUp = () => setResize(null);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp, { once: true });
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+  }, [resize, moveWindow, win.id, win.rect.x, win.rect.y]);
 
   if (win.minimized) return null;
 
@@ -70,6 +99,21 @@ export function Window({ win, children, contentTransparent = false, frameTranspa
       >
         {children}
       </div>
+      {resizable && (
+        <div
+          aria-hidden
+          onMouseDown={(e) => {
+            if (e.button !== 0) return;
+            setResize({ startX: e.clientX, startY: e.clientY, startWidth: win.rect.width, startHeight: win.rect.height });
+          }}
+          className="absolute right-0 bottom-0 w-4 h-4 cursor-nwse-resize"
+          style={{
+            // keep handle visible even on transparent frames
+            background:
+              'linear-gradient(135deg, transparent 0 40%, rgba(0,0,0,0.25) 40% 60%, transparent 60% 100%)',
+          }}
+        />
+      )}
     </div>
   );
 }

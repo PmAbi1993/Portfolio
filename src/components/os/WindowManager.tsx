@@ -22,6 +22,7 @@ export function WindowManager(): JSX.Element {
             win={w}
             contentTransparent={w.appType === 'ios-simulator'}
             frameTransparent={w.appType === 'ios-simulator'}
+            resizable={w.appType !== 'ios-simulator'}
           >
             {w.appType === 'finder' && <FinderAboutMe />}
             {w.appType === 'settings' && <SettingsWindow />}
