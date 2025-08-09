@@ -13,10 +13,20 @@ export type SettingsState = {
 
 const STORAGE_KEY = 'portfolio_settings_v1';
 
+function getSystemTheme(): ThemeMode {
+  try {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+  } catch {
+    return 'dark';
+  }
+}
+
 function loadInitial(): Pick<SettingsState, 'theme' | 'wallpaperIndex' | 'scale'> {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { theme: 'dark', wallpaperIndex: 0, scale: 1 };
+    if (!raw) return { theme: getSystemTheme(), wallpaperIndex: 0, scale: 1 };
     const parsed = JSON.parse(raw);
     return {
       theme: parsed.theme === 'light' ? 'light' : 'dark',
@@ -24,7 +34,7 @@ function loadInitial(): Pick<SettingsState, 'theme' | 'wallpaperIndex' | 'scale'
       scale: parsed.scale === 1.25 || parsed.scale === 1.5 ? parsed.scale : 1,
     } as const;
   } catch {
-    return { theme: 'dark', wallpaperIndex: 0, scale: 1 };
+    return { theme: getSystemTheme(), wallpaperIndex: 0, scale: 1 };
   }
 }
 

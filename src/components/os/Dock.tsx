@@ -14,8 +14,8 @@ export function Dock(): JSX.Element {
   ];
 
   return (
-    <div ref={dockRef} className="fixed bottom-4 left-1/2 -translate-x-1/2">
-      <div className="glass rounded-2xl px-3 py-2 shadow-mac" style={{ background: 'rgba(30,30,30,0.5)' }} role="toolbar" aria-label="Dock">
+    <div ref={dockRef} className="fixed bottom-6 left-1/2 -translate-x-1/2">
+      <div className="glass rounded-2xl px-3 py-2 shadow-mac bg-white/70 dark:bg-black/50 border border-black/10 dark:border-white/10" role="toolbar" aria-label="Dock">
         <ul className="flex items-end gap-3">
           {items.map((item) => {
             const win = windows[item.id];
@@ -24,7 +24,7 @@ export function Dock(): JSX.Element {
             return (
               <li key={item.id} className="text-center">
                 <button
-                  className={`w-14 h-14 rounded-xl bg-black/20 hover:bg-black/30 text-2xl transition-transform ${!bounced[item.id] ? 'bounce' : ''}`}
+                  className={`w-14 h-14 rounded-xl bg-black/10 hover:bg-black/20 dark:bg-black/20 dark:hover:bg-black/30 text-2xl transition-transform ring-1 ring-black/10 dark:ring-white/10 ${!bounced[item.id] ? 'bounce' : ''}`}
                   aria-label={item.title}
                   onAnimationEnd={() => setBounced((b) => ({ ...b, [item.id]: true }))}
                   onClick={() => {
@@ -35,7 +35,7 @@ export function Dock(): JSX.Element {
                   <span aria-hidden>{item.emoji}</span>
                 </button>
                 <div className="h-1 mt-1">
-                  {(isOpen || isMinimized) && <div className="mx-auto w-2 h-1 rounded bg-white/90" aria-hidden />}
+                  {(isOpen || isMinimized) && <div className="mx-auto w-2 h-1 rounded bg-black/70 dark:bg-white/90" aria-hidden />}
                 </div>
               </li>
             );

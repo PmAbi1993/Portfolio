@@ -5,7 +5,7 @@ export function SettingsWindow(): JSX.Element {
   const { theme, setTheme, wallpaperIndex, setWallpaperIndex, scale, setScale } = useSettingsStore();
 
   return (
-    <div className="p-4 text-white space-y-6">
+    <div className="p-4 text-black dark:text-white space-y-6">
       <section>
         <h2 className="font-semibold mb-2">Appearance</h2>
         <div className="flex items-center gap-3">
@@ -21,7 +21,18 @@ export function SettingsWindow(): JSX.Element {
         <h2 className="font-semibold mb-2">Wallpaper</h2>
         <div className="flex items-center gap-3">
           {[0,1,2].map((i) => (
-            <button key={i} className={`w-20 h-12 bg-white/20 rounded ${wallpaperIndex===i?'ring-2 ring-blue-400':''}`} onClick={() => setWallpaperIndex(i)} aria-label={`Wallpaper ${i+1}`} />
+            <button
+              key={i}
+              className={`w-20 h-12 rounded overflow-hidden ring-1 ring-black/10 dark:ring-white/10 ${wallpaperIndex===i ? 'outline outline-2 outline-blue-400' : ''}`}
+              style={{
+                backgroundImage: `url(wallpapers/wallpaper-${i}.jpg)`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+              onClick={() => setWallpaperIndex(i)}
+              aria-label={`Wallpaper ${i+1}`}
+              title={`Wallpaper ${i+1}`}
+            />
           ))}
         </div>
       </section>
