@@ -17,7 +17,12 @@ export function WindowManager(): JSX.Element {
     <>
       {sorted.map((w) => {
         return (
-          <Window key={w.id} win={w}>
+          <Window
+            key={w.id}
+            win={w}
+            contentTransparent={w.appType === 'ios-simulator'}
+            frameTransparent={w.appType === 'ios-simulator'}
+          >
             {w.appType === 'finder' && <FinderAboutMe />}
             {w.appType === 'settings' && <SettingsWindow />}
             {w.appType === 'project' && (

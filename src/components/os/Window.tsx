@@ -1,14 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
+import * as React from 'react';
 import { WindowState, useWindowStore } from '../../state/windowStore';
 
-type Props = { win: WindowState; children: React.ReactNode };
+type Props = {
+  win: WindowState;
+  children: React.ReactNode;
+  contentTransparent?: boolean;
+  frameTransparent?: boolean; // makes the window body clear like macOS Simulator
+};
 
-export function Window({ win, children }: Props): JSX.Element | null {
+export function Window({ win, children, contentTransparent = false, frameTransparent = false }: Props): JSX.Element | null {
   const { closeWindow, minimizeWindow, focusWindow, moveWindow } = useWindowStore();
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [drag, setDrag] = useState<{ startX: number; startY: number; startLeft: number; startTop: number } | null>(null);
+  const ref = React.useRef<HTMLDivElement | null>(null);
+  const [drag, setDrag] = React.useState<{ startX: number; startY: number; startLeft: number; startTop: number } | null>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!drag) return;
     const onMove = (e: MouseEvent) => {
       const dx = e.clientX - drag.startX;
@@ -31,13 +36,15 @@ export function Window({ win, children }: Props): JSX.Element | null {
       ref={ref}
       role="dialog"
       aria-label={win.title}
-      className="fixed bg-white/80 dark:bg-black/60 backdrop-blur-md text-black dark:text-white rounded-mac shadow-mac border border-white/10 overflow-hidden"
+      className={`fixed text-black dark:text-white rounded-mac overflow-hidden ${
+        frameTransparent ? 'bg-transparent shadow-none border-none backdrop-blur-0' : 'bg-white/80 dark:bg-black/60 backdrop-blur-md shadow-mac border border-white/10'
+      }`}
       style={{ left: win.rect.x, top: win.rect.y, width: win.rect.width, height: win.rect.height, zIndex: win.z }}
       onMouseDown={() => focusWindow(win.id)}
     >
       <div
-        className="h-8 flex items-center gap-2 px-3"
-        onMouseDown={(e) => {
+        className={`h-8 flex items-center gap-2 px-3 ${frameTransparent ? 'bg-transparent backdrop-blur-0' : ''}`}
+        onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
           // Start drag on titlebar only
           if (e.button !== 0) return;
           const el = ref.current;
@@ -52,7 +59,7 @@ export function Window({ win, children }: Props): JSX.Element | null {
         </div>
         <div className="mx-auto text-sm select-none pointer-events-none">{win.title}</div>
       </div>
-      <div className="w-full h-[calc(100%-2rem)] bg-black/5 dark:bg-black/20 overflow-auto">
+      <div className={`w-full h-[calc(100%-2rem)] overflow-auto ${contentTransparent ? '' : 'bg-black/5 dark:bg-black/20'}`}>
         {children}
       </div>
     </div>

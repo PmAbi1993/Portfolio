@@ -4,7 +4,7 @@ import React from 'react';
 // simply approximate the device frame, dynamic island, and a title.
 export function IosSimulator(): JSX.Element {
   return (
-    <div className="w-full h-full p-4 flex items-center justify-center">
+    <div className="w-full h-full p-4 flex items-center justify-center bg-transparent">
       <div className="relative bg-black rounded-[56px] p-3 shadow-inner" style={{ width: 360, height: 760 }} aria-label="iOS simulator mock">
         {/* Screen */}
         <div className="relative w-full h-full bg-white rounded-[44px] overflow-hidden">
