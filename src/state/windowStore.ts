@@ -10,7 +10,7 @@ export type WindowState = {
   rect: WindowRect;
   minimized: boolean;
   z: number;
-  appType: 'finder' | 'project' | 'settings' | 'terminal' | 'safari';
+  appType: 'finder' | 'project' | 'settings' | 'terminal' | 'safari' | 'ios-simulator';
   payload?: unknown;
 };
 

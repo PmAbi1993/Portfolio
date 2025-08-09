@@ -21,6 +21,14 @@ export function DesktopIcon({ project, index }: Props): JSX.Element {
         }
       />
       <span className="text-xs text-white/90 text-center max-w-[8rem] break-words">{project.name}</span>
+      <button
+        className="px-2 py-0.5 rounded-md text-[11px] bg-white/10 hover:bg-white/20 text-white focus:outline-none focus:ring"
+        onClick={() =>
+          openWindow({ id: 'ios-simulator', title: 'iOS Simulator', appType: 'ios-simulator', rect: { width: 420, height: 860, x: 240 + (index % 5) * 24, y: 140 + (index % 5) * 24 } })
+        }
+      >
+        App
+      </button>
     </div>
   );
 }
