@@ -3,7 +3,7 @@ import { MenuBar } from './MenuBar';
 import { Dock } from './Dock';
 import { DesktopIcon } from './DesktopIcon';
 import { WindowManager } from './WindowManager';
-import { projects } from '../../data/projects';
+import { projects } from '../../data';
 import { useSettingsStore } from '../../state/settingsStore';
 
 export function Desktop(): JSX.Element {
