@@ -4,6 +4,7 @@ import { Window } from './Window';
 import { FinderAboutMe } from '../../apps/FinderAboutMe';
 import { SettingsWindow } from '../../apps/SettingsWindow';
 import { ProjectWindow } from '../../apps/ProjectWindow';
+import { IosSimulator } from '../../apps/IosSimulator';
 
 export function WindowManager(): JSX.Element {
   const { windows, order } = useWindowStore();
@@ -22,6 +23,7 @@ export function WindowManager(): JSX.Element {
             {w.appType === 'project' && (
               <ProjectWindow project={(w.payload as { project: any }).project} />
             )}
+            {w.appType === 'ios-simulator' && <IosSimulator />}
           </Window>
         );
       })}
