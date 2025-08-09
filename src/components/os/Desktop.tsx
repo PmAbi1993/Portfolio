@@ -25,7 +25,7 @@ export function Desktop(): JSX.Element {
       />
       <MenuBar />
       <WindowManager />
-      <div className="absolute inset-0 pt-8 pb-20 px-4 select-none">
+      <div className="absolute left-0 right-0 bottom-0 top-12 px-4 select-none">
         <div className="grid grid-cols-6 gap-4 lg:grid-cols-10 xl:grid-cols-12">
           {projects.map((p, idx) => (
             <DesktopIcon key={p.slug} project={p} index={idx} />

@@ -16,7 +16,7 @@ export function MenuBar(): JSX.Element {
   const timeStr = useMemo(() => formatTime(now), [now]);
 
   return (
-    <div role="menubar" aria-label="Application menu bar" className="fixed top-0 left-0 right-0 h-8 glass text-white flex items-center justify-between px-3" style={{ background: 'rgba(0,0,0,0.28)' }}>
+    <div role="menubar" aria-label="Application menu bar" className="fixed top-0 left-0 right-0 z-40 h-8 glass text-white flex items-center justify-between px-3" style={{ background: 'rgba(0,0,0,0.28)' }}>
       <div className="flex items-center gap-4 text-sm">
         <span aria-hidden></span>
         <button className="focus:outline-none focus:ring rounded px-1" aria-haspopup="true">Portfolio</button>
