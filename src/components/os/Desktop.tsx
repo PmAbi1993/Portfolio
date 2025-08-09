@@ -17,9 +17,9 @@ export function Desktop(): JSX.Element {
   const wallpaperUrl = useMemo(() => `wallpapers/wallpaper-${wallpaperIndex % 3}.jpg`, [wallpaperIndex]);
 
   return (
-    <div className="h-full w-full overflow-hidden">
+    <div className="h-full w-full overflow-hidden bg-white dark:bg-black">
       <div
-        className="fixed inset-0 bg-black"
+        className="fixed inset-0"
         style={{ backgroundImage: `url(${wallpaperUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         aria-hidden
       />

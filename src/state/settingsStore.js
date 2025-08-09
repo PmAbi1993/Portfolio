@@ -1,10 +1,20 @@
 import { create } from 'zustand';
 const STORAGE_KEY = 'portfolio_settings_v1';
+function getSystemTheme() {
+    try {
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+    }
+    catch {
+        return 'dark';
+    }
+}
 function loadInitial() {
     try {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw)
-            return { theme: 'dark', wallpaperIndex: 0, scale: 1 };
+            return { theme: getSystemTheme(), wallpaperIndex: 0, scale: 1 };
         const parsed = JSON.parse(raw);
         return {
             theme: parsed.theme === 'light' ? 'light' : 'dark',
@@ -13,7 +23,7 @@ function loadInitial() {
         };
     }
     catch {
-        return { theme: 'dark', wallpaperIndex: 0, scale: 1 };
+        return { theme: getSystemTheme(), wallpaperIndex: 0, scale: 1 };
     }
 }
 export const useSettingsStore = create((set, get) => ({

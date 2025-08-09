@@ -5,14 +5,14 @@ type Props = { project: Project };
 
 export function ProjectWindow({ project }: Props): JSX.Element {
   return (
-    <div className="p-4 text-white space-y-4">
+    <div className="p-4 text-black dark:text-white space-y-4">
       <header>
         <h1 className="text-xl font-semibold">{project.name}</h1>
-        <p className="text-white/80">{project.summary}</p>
+        <p className="text-black/70 dark:text-white/80">{project.summary}</p>
       </header>
       <div className="flex flex-wrap gap-2">
         {project.tech.map((t) => (
-          <span key={t} className="px-2 py-1 rounded-full bg-white/10 text-sm">{t}</span>
+          <span key={t} className="px-2 py-1 rounded-full bg-black/10 dark:bg-white/10 text-sm">{t}</span>
         ))}
       </div>
       {project.links && (
@@ -25,7 +25,7 @@ export function ProjectWindow({ project }: Props): JSX.Element {
       {project.highlights && project.highlights.length > 0 && (
         <ul className="list-disc pl-5 space-y-1">
           {project.highlights.map((h, i) => (
-            <li key={i} className="text-white/90">{h}</li>
+            <li key={i} className="text-black/80 dark:text-white/90">{h}</li>
           ))}
         </ul>
       )}

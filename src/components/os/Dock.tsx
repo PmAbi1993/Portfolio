@@ -15,7 +15,7 @@ export function Dock(): JSX.Element {
 
   return (
     <div ref={dockRef} className="fixed bottom-4 left-1/2 -translate-x-1/2">
-      <div className="glass rounded-2xl px-3 py-2 shadow-mac" style={{ background: 'rgba(30,30,30,0.5)' }} role="toolbar" aria-label="Dock">
+      <div className="glass rounded-2xl px-3 py-2 shadow-mac bg-white/40 dark:bg-black/50" role="toolbar" aria-label="Dock">
         <ul className="flex items-end gap-3">
           {items.map((item) => {
             const win = windows[item.id];
@@ -35,7 +35,7 @@ export function Dock(): JSX.Element {
                   <span aria-hidden>{item.emoji}</span>
                 </button>
                 <div className="h-1 mt-1">
-                  {(isOpen || isMinimized) && <div className="mx-auto w-2 h-1 rounded bg-white/90" aria-hidden />}
+                  {(isOpen || isMinimized) && <div className="mx-auto w-2 h-1 rounded bg-black/70 dark:bg-white/90" aria-hidden />}
                 </div>
               </li>
             );

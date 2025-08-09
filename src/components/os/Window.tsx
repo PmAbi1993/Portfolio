@@ -31,7 +31,7 @@ export function Window({ win, children }: Props): JSX.Element | null {
       ref={ref}
       role="dialog"
       aria-label={win.title}
-      className="fixed bg-white/80 dark:bg-black/60 backdrop-blur-md text-white rounded-mac shadow-mac border border-white/10 overflow-hidden"
+      className="fixed bg-white/80 dark:bg-black/60 backdrop-blur-md text-black dark:text-white rounded-mac shadow-mac border border-white/10 overflow-hidden"
       style={{ left: win.rect.x, top: win.rect.y, width: win.rect.width, height: win.rect.height, zIndex: win.z }}
       onMouseDown={() => focusWindow(win.id)}
     >
@@ -52,7 +52,7 @@ export function Window({ win, children }: Props): JSX.Element | null {
         </div>
         <div className="mx-auto text-sm select-none pointer-events-none">{win.title}</div>
       </div>
-      <div className="w-full h-[calc(100%-2rem)] bg-black/20 overflow-auto">
+      <div className="w-full h-[calc(100%-2rem)] bg-black/5 dark:bg-black/20 overflow-auto">
         {children}
       </div>
     </div>
